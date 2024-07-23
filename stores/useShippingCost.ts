@@ -21,6 +21,9 @@ export const useShippingCost = defineStore("useShippingCost", {
     getShippingCost: (state) => {
       return state.shippingCost;
     },
+    getShippingForm: (state) => {
+      return state.shippingForm;
+    },
   },
   actions: {
     setShippingCost(cost: number) {
@@ -31,30 +34,13 @@ export const useShippingCost = defineStore("useShippingCost", {
       weight: number,
       priority: ShippingPriority
     ): string | number {
-      // Input validation
-      if (
-        destination !== ShippingDestination.DOMESTIC &&
-        destination !== ShippingDestination.INTERNATIONAL
-      ) {
-        return "Invalid destination";
-      }
-      if (weight <= 0) {
-        return "Invalid weight";
-      }
-      if (
-        priority !== ShippingPriority.STANDARD &&
-        priority !== ShippingPriority.EXPRESS &&
-        priority !== ShippingPriority.PRIORITY
-      ) {
-        return "Invalid priority";
-      }
-
       // Define base costs and additional cost thresholds
+      // baseCosts therholds
       const baseCosts = {
         domestic: { standard: 5, express: 10, priority: 20 },
         international: { standard: 15, express: 25, priority: 50 },
       };
-
+      // additionalCostThresholds
       const additionalCostThresholds = {
         domestic: { weight: 10, cost: 10 },
         international: { weight: 5, cost: 50 },

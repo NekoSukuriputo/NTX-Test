@@ -1,6 +1,6 @@
 <template>
   <div class="justify-center mt-10">
-    <FormTax />
+    <FormShippment />
   </div>
 </template>
 
