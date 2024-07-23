@@ -16,7 +16,7 @@
     </svg>
     <span class="sr-only">Danger</span>
     <div>
-      <span class="font-medium">Ensure that these requirements are met:</span>
+      <span class="font-medium">Ensure that these requirements are meet:</span>
       <ul class="mt-1.5 list-disc list-inside">
         <li v-for="(content, index) in contents" :key="index">
           {{ content }}

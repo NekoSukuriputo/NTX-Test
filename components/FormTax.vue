@@ -14,11 +14,12 @@
         </div>
         <input
           v-model="formTax.income"
-          type="number"
+          type="text"
           id="input-group-1"
           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="Input income"
           required
+          @keypress="isNumber($event)"
         />
       </div>
     </div>
@@ -65,7 +66,7 @@
       class="mt-4 p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400"
       role="alert"
     >
-      Your Tax is ${{ taxStore.getTaxResult }}
+      Your Tax is {{ dollarFormating(taxStore.getTaxResult) }}
     </div>
   </form>
 </template>
@@ -118,6 +119,12 @@ const onSubmit = async () => {
   isLoading.value = false;
   // set result in store
   taxStore.setTaxResult(result);
+};
+const isNumber = (event: KeyboardEvent) => {
+  const char = String.fromCharCode(event.which);
+  if (!/[0-9.]/.test(char)) {
+    event.preventDefault();
+  }
 };
 </script>
 

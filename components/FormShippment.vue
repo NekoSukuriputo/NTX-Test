@@ -46,15 +46,16 @@
       <label
         for="weight"
         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-        >Dependents</label
+        >Weight</label
       >
       <input
         v-model="formShippingCost.weight"
-        type="number"
+        type="text"
         id="weight"
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         placeholder="Input weight"
         required
+        @keypress="isNumber($event)"
       />
     </div>
     <Alert v-if="errors.length > 0" :contents="errors" />
@@ -70,7 +71,7 @@
       class="mt-4 p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400"
       role="alert"
     >
-      Your Shipment Cost is ${{ shippmentCost.getShippingCost }}
+      Your Shipment Cost is {{ dollarFormating(shippmentCost.getShippingCost) }}
     </div>
   </form>
 </template>
@@ -108,11 +109,11 @@ const onSubmit = async () => {
     formShippingCost.value.destination !== ShippingDestination.DOMESTIC &&
     formShippingCost.value.destination !== ShippingDestination.INTERNATIONAL
   ) {
-    return "Invalid destination";
+    errors.value.push("Invalid destination");
   }
   // check if weight is greater than 0
   if (formShippingCost.value.weight && formShippingCost.value.weight <= 0) {
-    return "Invalid weight";
+    errors.value.push("Invalid weight");
   }
   // check if priority is not null
   if (
@@ -120,7 +121,7 @@ const onSubmit = async () => {
     formShippingCost.value.priority !== ShippingPriority.EXPRESS &&
     formShippingCost.value.priority !== ShippingPriority.PRIORITY
   ) {
-    return "Invalid priority";
+    errors.value.push("Invalid priority");
   }
 
   if (errors.value.length > 0) {
@@ -129,13 +130,20 @@ const onSubmit = async () => {
   }
   // get result from calculateTax in store
   const result = await shippmentCost.calculateShippingCost(
-    formShippingCost.value.destination,
+    formShippingCost.value.destination as ShippingDestination,
     formShippingCost.value.weight as number,
-    formShippingCost.value.priority
+    formShippingCost.value.priority as ShippingPriority
   );
   isLoading.value = false;
   // set result in store
   shippmentCost.setShippingCost(+result);
+};
+
+const isNumber = (event: KeyboardEvent) => {
+  const char = String.fromCharCode(event.which);
+  if (!/[0-9.]/.test(char)) {
+    event.preventDefault();
+  }
 };
 </script>
 
