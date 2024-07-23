@@ -108,12 +108,14 @@ const onSubmit = async () => {
     isLoading.value = false;
     return;
   }
+  // get result from calculateTax in store
   const result = await taxStore.calculateTax(
     formTax.value.income,
     formTax.value.age,
     formTax.value.dependents
   );
   isLoading.value = false;
+  // set result in store    
   taxStore.setTaxResult(result);
 };
 </script>

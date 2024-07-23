@@ -36,12 +36,12 @@ export const useTax = defineStore({
       ): number {
         // Base tax based on income
         let baseTax = 0;
-        if (income <= 10000) {
-          baseTax = income * 0.1;
-        } else if (income <= 50000) {
-          baseTax = income * 0.2;
+        if (income <= 10000) { // if income is less than or equal to 10000
+          baseTax = income * 0.1; // get 10% tax discount
+        } else if (income <= 50000) { // if income is less than or equal to 50000
+          baseTax = income * 0.2; // get 20% tax discount
         } else {
-          baseTax = income * 0.3;
+          baseTax = income * 0.3; // get 30% tax discount
         }
 
         // Discount for age 65 or older
@@ -50,15 +50,15 @@ export const useTax = defineStore({
         }
 
         // Deduction for dependents
-        const deduction = dependents * 500;
+        const deduction = dependents * 500; // $500 deduction for each dependent
         baseTax -= deduction;
 
         // Ensure minimum tax is $0
         if (baseTax < 0) {
-          baseTax = 0;
+          baseTax = 0; // set minimum tax to $0
         }
 
-        return baseTax;
+        return baseTax; // return base tax
       }
 
       // Calculate and return the tax
