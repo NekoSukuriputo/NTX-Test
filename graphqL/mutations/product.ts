@@ -5,10 +5,9 @@ export const CREATE_PRODUCT = gql`
   mutation createProduct(
     $name: String!
     $price: numeric!
-    $quantity: numeric!
-    $category_id: Int!
-  ) #$company_id: Int!
-  {
+    $quantity: Int!
+    $category_id: Int! #$company_id: Int!
+  ) {
     insert_products(
       objects: {
         name: $name
@@ -18,12 +17,14 @@ export const CREATE_PRODUCT = gql`
         #   company_id: $company_id
       }
     ) {
-      id
-      name
-      price
-      quantity
-      company_id
-      category_id
+      affected_rows
+      returning {
+        id
+        name
+        price
+        quantity
+        category_id
+      }
     }
   }
 `;
@@ -34,8 +35,7 @@ export const UPDATE_PRODUCT_ONE = gql`
     $id: Int!
     $name: String!
     $price: numeric!
-    $quantity: numeric!
-    $company_id: Int!
+    $quantity: Int!
     $category_id: Int!
   ) {
     update_products_by_pk(

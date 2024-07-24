@@ -6,17 +6,17 @@
         type="button"
         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
       >
-        Add Category
+        Add Product
       </button>
     </div>
 
     <!-- Main modal -->
-    <FormCategory
+    <FormProduct
       v-model="showModal"
       id="crud-modal"
       @submit="onSubmit"
       :loading="isLoading"
-      :title="flag === 'add' ? 'Add Category' : 'Edit Category'"
+      :title="flag === 'add' ? 'Add Product' : 'Edit Product'"
     />
     <Table>
       <template #header>
@@ -33,26 +33,26 @@
       </template>
       <template #content>
         <tr
-          v-if="paginatedCategories.length"
-          v-for="(category, index) in paginatedCategories"
+          v-if="paginatedProducts.length"
+          v-for="(product, index) in paginatedProducts"
           :key="index"
           class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
         >
           <td class="px-6 py-4">
-            {{ category.id }}
+            {{ product.id }}
           </td>
           <td class="px-6 py-4">
-            {{ category.name }}
+            {{ product.name }}
           </td>
           <td class="px-6 py-4">
             <div class="flex space-x-3">
               <span
                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
-                @click="onEdit(category)"
+                @click="onEdit(product)"
                 >Edit</span
               >
               <span
-                @click="onDelete(category.id)"
+                @click="onDelete(product.id)"
                 class="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer"
                 >Delete</span
               >
@@ -76,13 +76,12 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import "sweetalert2/src/sweetalert2.scss";
 
 import { FwbPagination } from "flowbite-vue";
-import type { Category } from "~/types/Category";
+import type { Product } from "~/types/Products";
 
-const categoryStore = useCategory();
-const formCategory = computed(() => categoryStore.getFormCategory);
-const paginatedCategories = computed(() => categoryStore.paginatedCategories);
-const currentPage = computed(() => categoryStore.getCurrentPage);
-const totalPage = computed(() => categoryStore.getTotalPage);
+const productStore = useProduct();
+const paginatedProducts = computed(() => productStore.paginatedCategories);
+const currentPage = computed(() => productStore.getCurrentPage);
+const totalPage = computed(() => productStore.getTotalPage);
 
 const flag = ref("");
 const showModal = ref(false);
@@ -94,23 +93,24 @@ definePageMeta({
 const headers = ["ID", "Name", "Actions"];
 
 onBeforeMount(async () => {
-  await categoryStore.fetchCategories();
+  await productStore.fetchProducts();
+  await productStore.fetchCategoryOptions();
   flag.value = "";
 });
 
 const onAdd = () => {
   flag.value = "add";
   showModal.value = true;
-  categoryStore.resetFormCategory();
+  productStore.resetFormProduct();
 };
 
 const onEdit = (item: Category) => {
   flag.value = "edit";
   showModal.value = true;
-  categoryStore.setFormCategory(item);
+  productStore.setFormProduct(item);
 };
 
-const onDelete = (idCategory: number) => {
+const onDelete = (idProduct: number) => {
   Swal.fire({
     title: "Are you sure?",
     text: "You won't be able to revert this!",
@@ -123,7 +123,7 @@ const onDelete = (idCategory: number) => {
     if (result.isConfirmed) {
       isLoading.value = true;
       try {
-        await categoryStore.deleteCategory(idCategory);
+        await productStore.deleteProduct(idProduct);
         Swal.fire({
           title: "Deleted!",
           text: "Your file has been deleted.",
@@ -148,7 +148,7 @@ const onSubmit = async () => {
   isLoading.value = true;
   try {
     if (flag.value === "add") {
-      await categoryStore.createCategory();
+      await productStore.createProduct();
       Swal.fire({
         title: "Success",
         text: "Your category has been added successfully",
@@ -158,7 +158,7 @@ const onSubmit = async () => {
         isLoading.value = false;
       });
     } else if (flag.value === "edit") {
-      await categoryStore.updateCategory();
+      await productStore.updateProduct();
       Swal.fire({
         title: "Success",
         text: "Your category has been updated successfully",
@@ -179,7 +179,7 @@ const onSubmit = async () => {
 };
 
 const onPageChange = (page: number) => {
-  categoryStore.setPage(page);
+  productStore.setPage(page);
 };
 </script>
 
