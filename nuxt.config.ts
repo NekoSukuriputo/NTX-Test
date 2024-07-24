@@ -7,6 +7,7 @@ export default defineNuxtConfig({
   },
   modules: ["@pinia/nuxt", "@nuxtjs/apollo", "@nuxtjs/tailwindcss"],
   apollo: {
+    autoImports: true,
     clients: {
       default: {
         httpEndpoint: "https://sirefcode.hasura.app/v1/graphql",

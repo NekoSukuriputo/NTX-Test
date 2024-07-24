@@ -4,7 +4,7 @@
 
 <script lang="ts" setup>
 definePageMeta({
-  layout: "crudLayout",
+  layout: "crud-layout",
 });
 </script>
 

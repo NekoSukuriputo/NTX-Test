@@ -1,15 +1,11 @@
 <template>
-  <div>
-    
-  </div>
+  <div></div>
 </template>
 
 <script lang="ts" setup>
 definePageMeta({
-  layout: "crudLayout",
+  layout: "crud-layout",
 });
 </script>
 
-<style>
-
-</style>
+<style></style>

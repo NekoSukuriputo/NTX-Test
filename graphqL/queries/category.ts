@@ -2,8 +2,8 @@ import gql from "graphql-tag";
 
 // GraphQL query for fetching categories
 export const GET_CATEGORIES = gql`
-  query getCategories {
-    categories {
+  query getCategories($limit: Int!) {
+    categories(limit: $limit) {
       id
       name
     }
