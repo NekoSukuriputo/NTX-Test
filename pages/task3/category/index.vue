@@ -16,6 +16,7 @@
       id="crud-modal"
       @submit="onSubmit"
       :loading="isLoading"
+      :title="flag === 'add' ? 'Add Category' : 'Edit Category'"
     />
     <Table>
       <template #header>
@@ -32,8 +33,8 @@
       </template>
       <template #content>
         <tr
-          v-if="categories"
-          v-for="(category, index) in categories"
+          v-if="paginatedCategories.length"
+          v-for="(category, index) in paginatedCategories"
           :key="index"
           class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
         >
@@ -59,9 +60,13 @@
           </td>
         </tr>
       </template>
-      <!-- <template>
-        <FwbPagination />
-      </template> -->
+      <template #pagination>
+        <FwbPagination
+          :modelValue="currentPage"
+          :totalPages="totalPage"
+          @update:model-value="onPageChange"
+        />
+      </template>
     </Table>
   </div>
 </template>
@@ -71,22 +76,14 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import "sweetalert2/src/sweetalert2.scss";
 
 import { FwbPagination } from "flowbite-vue";
-import { GET_CATEGORIES } from "~/graphqL/queries/category";
-import type { CategoriesResult, Category } from "~/types/Category";
-import {
-  CREATE_CATEGORY_ONE,
-  DELETE_CATEGORY_ONE,
-  UPDATE_CATEGORY_ONE,
-} from "~/graphqL/mutations/category";
-import { useCategory } from "~/stores/useCategory";
+import type { Category } from "~/types/Category";
 
 const categoryStore = useCategory();
-const formCategory = computed(() => {
-  return categoryStore.getFormCategory;
-});
-const categories = computed(() => {
-  return categoryStore.getCategories;
-});
+const formCategory = computed(() => categoryStore.getFormCategory);
+const paginatedCategories = computed(() => categoryStore.paginatedCategories);
+const currentPage = computed(() => categoryStore.getCurrentPage);
+const totalPage = computed(() => categoryStore.getTotalPage);
+
 const flag = ref("");
 const showModal = ref(false);
 const isLoading = ref(false);
@@ -97,25 +94,23 @@ definePageMeta({
 const headers = ["ID", "Name", "Actions"];
 
 onBeforeMount(async () => {
-  await categoryStore.fetchCategories(10, 20);
+  await categoryStore.fetchCategories();
   flag.value = "";
 });
 
-const onAdd = async () => {
-  // TODO
+const onAdd = () => {
   flag.value = "add";
   showModal.value = true;
   categoryStore.resetFormCategory();
 };
 
-const onEdit = async (item: Category) => {
-  // TODO
+const onEdit = (item: Category) => {
   flag.value = "edit";
   showModal.value = true;
   categoryStore.setFormCategory(item);
 };
-const onDelete = async (idCategory: number) => {
-  // TODO
+
+const onDelete = (idCategory: number) => {
   Swal.fire({
     title: "Are you sure?",
     text: "You won't be able to revert this!",
@@ -127,31 +122,16 @@ const onDelete = async (idCategory: number) => {
   }).then(async (result) => {
     if (result.isConfirmed) {
       isLoading.value = true;
-      // TODO
       try {
-        const { mutate } = useMutation(DELETE_CATEGORY_ONE);
-
-        const response = await mutate({
-          id: idCategory,
-        });
-
-        if (response.errors) {
+        await categoryStore.deleteCategory(idCategory);
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        }).then(() => {
+          showModal.value = false;
           isLoading.value = false;
-          Swal.fire({
-            title: "Error",
-            text: "Something went wrong: " + response.errors[0].message,
-            icon: "error",
-          });
-        } else {
-          Swal.fire({
-            title: "Deleted!",
-            text: "Your file has been deleted.",
-            icon: "success",
-          }).then(() => {
-            showModal.value = false;
-            isLoading.value = false;
-          });
-        }
+        });
       } catch (error) {
         Swal.fire({
           title: "Error",
@@ -165,50 +145,41 @@ const onDelete = async (idCategory: number) => {
 };
 
 const onSubmit = async () => {
-  if (flag.value === "add") {
-    isLoading.value = true;
-    try {
-      const response = await categoryStore.createCategory();
-
+  isLoading.value = true;
+  try {
+    if (flag.value === "add") {
+      await categoryStore.createCategory();
       Swal.fire({
         title: "Success",
         text: "Your category has been added successfully",
         icon: "success",
-      }).then(async () => {
+      }).then(() => {
         showModal.value = false;
         isLoading.value = false;
-        await categoryStore.fetchCategories(10, 20);
       });
-    } catch (error) {
-      Swal.fire({
-        title: "Error",
-        text: "Something went wrong: " + error.message,
-        icon: "error",
-      });
-      isLoading.value = false;
-    }
-  } else if (flag.value === "edit") {
-    isLoading.value = true;
-    try {
-      const response = await categoryStore.updateCategory();
+    } else if (flag.value === "edit") {
+      await categoryStore.updateCategory();
       Swal.fire({
         title: "Success",
         text: "Your category has been updated successfully",
         icon: "success",
-      }).then(async () => {
+      }).then(() => {
         showModal.value = false;
         isLoading.value = false;
-        await categoryStore.fetchCategories(10, 20);
       });
-    } catch (error) {
-      Swal.fire({
-        title: "Error",
-        text: "Something went wrong: " + error.message,
-        icon: "error",
-      });
-      isLoading.value = false;
     }
+  } catch (error) {
+    Swal.fire({
+      title: "Error",
+      text: "Something went wrong: " + error.message,
+      icon: "error",
+    });
+    isLoading.value = false;
   }
+};
+
+const onPageChange = (page: number) => {
+  categoryStore.setPage(page);
 };
 </script>
 

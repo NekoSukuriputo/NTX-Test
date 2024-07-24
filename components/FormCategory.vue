@@ -2,7 +2,7 @@
   <fwb-modal v-if="model" @close="closeModal" not-escapable>
     <template #header>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-        Create New Category
+        {{ title }}
       </h3>
     </template>
     <template #body>
@@ -15,7 +15,8 @@
               >Name</label
             >
             <input
-              v-model="formCategory.name"
+              :value="formCategory.name"
+              @change="onChangeName"
               type="text"
               name="name"
               id="name"
@@ -41,17 +42,17 @@
 
 <script lang="ts" setup>
 import { FwbModal, FwbButton } from "flowbite-vue";
-import { useCategory } from "~/stores/useCategory";
 const categoryStore = useCategory();
 
-const formCategory = computed({
-  get() {
-    return categoryStore.getFormCategory;
-  },
-  set(value) {
-    categoryStore.setFormCategory(value);
-  },
+const formCategory = computed(() => {
+  return categoryStore.formCategory;
 });
+
+const onChangeName = (event: Event & { target: HTMLInputElement }) => {
+  if (event.target) {
+    formCategory.value.name = event.target.value;
+  }
+};
 
 const model = defineModel();
 
@@ -61,6 +62,10 @@ defineProps({
   loading: {
     type: Boolean,
     default: false,
+  },
+  title: {
+    type: String,
+    default: "",
   },
 });
 

@@ -1,21 +1,21 @@
 import gql from "graphql-tag";
 
 // create product mutation
-export const CREATE_PRODUCT_ONE = gql`
+export const CREATE_PRODUCT = gql`
   mutation createProduct(
     $name: String!
     $price: numeric!
     $quantity: numeric!
-    $company_id: Int!
     $category_id: Int!
-  ) {
-    insert_products_one(
+  ) #$company_id: Int!
+  {
+    insert_products(
       objects: {
         name: $name
         price: $price
         quantity: $quantity
-        company_id: $company_id
         category_id: $category_id
+        #   company_id: $company_id
       }
     ) {
       id

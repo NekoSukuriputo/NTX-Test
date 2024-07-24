@@ -1,7 +1,7 @@
 <template>
-  <div class="container mx-auto flex flex-col">
+  <main class="container mx-auto">
     <slot />
-  </div>
+  </main>
 </template>
 
 <script lang="ts" setup>
