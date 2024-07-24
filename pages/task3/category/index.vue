@@ -32,8 +32,8 @@
       </template>
       <template #content>
         <tr
-          v-if="result.categories"
-          v-for="(category, index) in result.categories"
+          v-if="categories"
+          v-for="(category, index) in categories"
           :key="index"
           class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
         >
@@ -84,6 +84,9 @@ const categoryStore = useCategory();
 const formCategory = computed(() => {
   return categoryStore.getFormCategory;
 });
+const categories = computed(() => {
+  return categoryStore.getCategories;
+});
 const flag = ref("");
 const showModal = ref(false);
 const isLoading = ref(false);
@@ -91,12 +94,12 @@ definePageMeta({
   layout: "crud-layout",
 });
 
-const { result } = await useQuery<CategoriesResult>(GET_CATEGORIES, {
-  limit: 10,
-  offset: 20,
-});
-
 const headers = ["ID", "Name", "Actions"];
+
+onBeforeMount(async () => {
+  await categoryStore.fetchCategories(10, 20);
+  flag.value = "";
+});
 
 const onAdd = async () => {
   // TODO
@@ -162,33 +165,20 @@ const onDelete = async (idCategory: number) => {
 };
 
 const onSubmit = async () => {
-  isLoading.value = true;
-
   if (flag.value === "add") {
+    isLoading.value = true;
     try {
-      const { mutate } = useMutation(CREATE_CATEGORY_ONE);
+      const response = await categoryStore.createCategory();
 
-      const response = await mutate({
-        name: formCategory.value.name,
-      });
-
-      if (response.errors) {
+      Swal.fire({
+        title: "Success",
+        text: "Your category has been added successfully",
+        icon: "success",
+      }).then(async () => {
+        showModal.value = false;
         isLoading.value = false;
-        Swal.fire({
-          title: "Error",
-          text: "Something went wrong: " + response.errors[0].message,
-          icon: "error",
-        });
-      } else {
-        Swal.fire({
-          title: "Success",
-          text: "Your category has been added successfully",
-          icon: "success",
-        }).then(() => {
-          showModal.value = false;
-          isLoading.value = false;
-        });
-      }
+        await categoryStore.fetchCategories(10, 20);
+      });
     } catch (error) {
       Swal.fire({
         title: "Error",
@@ -198,30 +188,18 @@ const onSubmit = async () => {
       isLoading.value = false;
     }
   } else if (flag.value === "edit") {
+    isLoading.value = true;
     try {
-      const { mutate } = useMutation(UPDATE_CATEGORY_ONE);
-      const response = await mutate({
-        name: formCategory.value.name,
-        id: formCategory.value.id,
-      });
-
-      if (response.errors) {
+      const response = await categoryStore.updateCategory();
+      Swal.fire({
+        title: "Success",
+        text: "Your category has been updated successfully",
+        icon: "success",
+      }).then(async () => {
+        showModal.value = false;
         isLoading.value = false;
-        Swal.fire({
-          title: "Error",
-          text: "Something went wrong: " + response.errors[0].message,
-          icon: "error",
-        });
-      } else {
-        Swal.fire({
-          title: "Success",
-          text: "Your category has been updated successfully",
-          icon: "success",
-        }).then(() => {
-          showModal.value = false;
-          isLoading.value = false;
-        });
-      }
+        await categoryStore.fetchCategories(10, 20);
+      });
     } catch (error) {
       Swal.fire({
         title: "Error",

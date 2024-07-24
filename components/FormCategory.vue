@@ -6,7 +6,7 @@
       </h3>
     </template>
     <template #body>
-      <form class="p-4 md:p-5" @submit.prevent="$emit('submit')">
+      <form class="p-4 md:p-5" @submit.prevent="onSubmit">
         <div class="grid gap-4 mb-4 grid-cols-2">
           <div class="col-span-2">
             <label
@@ -43,11 +43,18 @@
 import { FwbModal, FwbButton } from "flowbite-vue";
 import { useCategory } from "~/stores/useCategory";
 const categoryStore = useCategory();
-const formCategory = computed(() => {
-  return categoryStore.getFormCategory;
+const formCategory = computed({
+  get: () => {
+    return categoryStore.getFormCategory;
+  },
+  set: (value) => {
+    categoryStore.setFormCategory(value);
+  },
 });
 
 const model = defineModel();
+
+const emit = defineEmits(["submit"]);
 
 defineProps({
   loading: {
@@ -58,6 +65,9 @@ defineProps({
 
 const closeModal = () => {
   model.value = false;
+};
+const onSubmit = () => {
+  emit("submit");
 };
 </script>
 

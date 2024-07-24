@@ -1,3 +1,7 @@
+import {
+  CREATE_CATEGORY_ONE,
+  UPDATE_CATEGORY_ONE,
+} from "~/graphqL/mutations/category";
 import { GET_CATEGORIES } from "~/graphqL/queries/category";
 import type { CategoriesResult, Category } from "~/types/Category";
 
@@ -30,15 +34,48 @@ export const useCategory = defineStore("useCategory", {
         ...INIT_FORM_CATEGORY,
       };
     },
-    async fetchCategories(limit:number, offset:number) {
+    async createCategory() {
       try {
-        const { result } = await useQuery<CategoriesResult>(GET_CATEGORIES, {
-          variables: {
-            limit,
-            offset,
-          },
+        const { mutate, onError } = useMutation(CREATE_CATEGORY_ONE);
+        await mutate({
+          name: this.formCategory.name,
         });
-        this.categories = result.data.categories;
+        onError((error) => {
+          throw error;
+        });
+      } catch (error) {
+        console.error("Failed to create category:", error);
+      }
+    },
+    async updateCategory() {
+      try {
+        const { mutate, onError } = useMutation(UPDATE_CATEGORY_ONE);
+        await mutate({
+          name: this.formCategory.name,
+          id: this.formCategory.id,
+        });
+        onError((error) => {
+          throw error;
+        });
+      } catch (error) {
+        console.error("Failed to create category:", error);
+      }
+    },
+    async fetchCategories(limit: number, offset: number) {
+      try {
+        const { onResult, onError } = useQuery<CategoriesResult>(
+          GET_CATEGORIES,
+          {
+            limit: limit,
+            offset: offset,
+          }
+        );
+        onResult(({ data }) => {
+          this.categories = data?.categories;
+        });
+        onError((error) => {
+          throw error;
+        });
       } catch (error) {
         console.error("Failed to fetch categories:", error);
       }
