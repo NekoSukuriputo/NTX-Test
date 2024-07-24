@@ -17,6 +17,7 @@ export const useCategory = defineStore("useCategory", {
     categories: [] as Category[],
     currentPage: 1,
     itemsPerPage: 10,
+    isLoading: true,
   }),
   getters: {
     getFormCategory: (state) => {
@@ -36,6 +37,9 @@ export const useCategory = defineStore("useCategory", {
       const end = start + state.itemsPerPage;
       return state.categories.slice(start, end);
     },
+    getLoading: (state) => {
+      return state.isLoading
+    }
   },
   actions: {
     setFormCategory(category: Category) {
@@ -91,6 +95,7 @@ export const useCategory = defineStore("useCategory", {
       }
     },
     async fetchCategories() {
+      this.isLoading = true;
       try {
         const { onResult, onError } =
           useQuery<CategoriesResult>(GET_CATEGORIES);
@@ -100,7 +105,9 @@ export const useCategory = defineStore("useCategory", {
         onError((error) => {
           throw error;
         });
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         console.error("Failed to fetch categories:", error);
       }
     },

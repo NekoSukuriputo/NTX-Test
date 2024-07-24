@@ -50,6 +50,9 @@ export const useProduct = defineStore("useProduct", {
     setFormProduct(product: Product) {
       this.formProduct.id = product.id;
       this.formProduct.name = product.name;
+      this.formProduct.price = product.price;
+      this.formProduct.quantity = product.quantity;
+      this.formProduct.category_id = product.category_id;
     },
     resetFormProduct() {
       this.formProduct = {
@@ -77,8 +80,11 @@ export const useProduct = defineStore("useProduct", {
       try {
         const { mutate, onError } = useMutation(UPDATE_PRODUCT_ONE);
         await mutate({
-          name: this.formProduct.name,
           id: this.formProduct.id,
+          name: this.formProduct.name,
+          price: this.formProduct.price,
+          quantity: this.formProduct.quantity,
+          category_id: this.formProduct.category_id,
         });
         onError((error) => {
           throw error;
@@ -134,6 +140,6 @@ export const useProduct = defineStore("useProduct", {
       } catch (error) {
         console.error("Failed to fetch categories:", error);
       }
-    }
+    },
   },
 });

@@ -107,8 +107,11 @@ const categoryOptions = computed(() => {
   return productStore.categoryOptions;
 });
 
-const formProduct = computed(() => {
-  return productStore.formProduct;
+const formProduct = computed({
+  get: () => productStore.formProduct,
+  set: (value) => {
+    productStore.formProduct = value;
+  },
 });
 
 const onChangeName = (event: Event & { target: HTMLInputElement }) => {

@@ -36,7 +36,7 @@ export const UPDATE_PRODUCT_ONE = gql`
     $name: String!
     $price: numeric!
     $quantity: Int!
-    $category_id: Int!
+    $category_id: Int! #
   ) {
     update_products_by_pk(
       pk_columns: { id: $id }
@@ -44,7 +44,6 @@ export const UPDATE_PRODUCT_ONE = gql`
         name: $name
         price: $price
         quantity: $quantity
-        company_id: $company_id
         category_id: $category_id
       }
     ) {
@@ -52,7 +51,6 @@ export const UPDATE_PRODUCT_ONE = gql`
       name
       price
       quantity
-      company_id
       category_id
     }
   }

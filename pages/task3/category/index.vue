@@ -32,8 +32,9 @@
         </tr>
       </template>
       <template #content>
+        <Loading v-if="isLoadingFetch" class="mx-auto justify-center" />
         <tr
-          v-if="paginatedCategories.length"
+          v-if="paginatedCategories.length > 0"
           v-for="(category, index) in paginatedCategories"
           :key="index"
           class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
@@ -83,6 +84,7 @@ const formCategory = computed(() => categoryStore.getFormCategory);
 const paginatedCategories = computed(() => categoryStore.paginatedCategories);
 const currentPage = computed(() => categoryStore.getCurrentPage);
 const totalPage = computed(() => categoryStore.getTotalPage);
+const isLoadingFetch = computed(() => categoryStore.getLoading);
 
 const flag = ref("");
 const showModal = ref(false);

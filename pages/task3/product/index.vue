@@ -45,6 +45,19 @@
             {{ product.name }}
           </td>
           <td class="px-6 py-4">
+            {{ product.price }}
+          </td>
+          <td class="px-6 py-4">
+            {{ product.quantity }}
+          </td>
+          <td class="px-6 py-4">
+            {{
+              productStore.categoryOptions.find(
+                (category) => category.id === product.category_id
+              )?.name || "Not Found"
+            }}
+          </td>
+          <td class="px-6 py-4">
             <div class="flex space-x-3">
               <span
                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
@@ -90,7 +103,7 @@ definePageMeta({
   layout: "crud-layout",
 });
 
-const headers = ["ID", "Name", "Actions"];
+const headers = ["ID", "Name", "Price", "Quantity", "Category", "Actions"];
 
 onBeforeMount(async () => {
   await productStore.fetchProducts();
@@ -104,9 +117,10 @@ const onAdd = () => {
   productStore.resetFormProduct();
 };
 
-const onEdit = (item: Category) => {
+const onEdit = (item: Product) => {
   flag.value = "edit";
   showModal.value = true;
+  console.log("item", item);
   productStore.setFormProduct(item);
 };
 
