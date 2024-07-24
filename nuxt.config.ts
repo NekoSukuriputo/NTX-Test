@@ -23,11 +23,6 @@ export default defineNuxtConfig({
   pinia: {
     storesDirs: ["./stores/**"],
   },
-  runtimeConfig: {
-    public: {
-      hasuraAdminSecret: process.env.HASURA_ADMIN_SECRET,
-    },
-  },
   tailwindcss: {
     cssPath: "~/assets/css/tailwind.css",
     configPath: "~/tailwind.config.js",
