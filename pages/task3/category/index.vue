@@ -202,6 +202,7 @@ const onSubmit = async () => {
       const { mutate } = useMutation(UPDATE_CATEGORY_ONE);
       const response = await mutate({
         name: formCategory.value.name,
+        id: formCategory.value.id,
       });
 
       if (response.errors) {

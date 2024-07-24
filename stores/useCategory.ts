@@ -29,6 +29,19 @@ export const useCategory = defineStore("useCategory", {
       this.formCategory = {
         ...INIT_FORM_CATEGORY,
       };
-    }
+    },
+    async fetchCategories(limit:number, offset:number) {
+      try {
+        const { result } = await useQuery<CategoriesResult>(GET_CATEGORIES, {
+          variables: {
+            limit,
+            offset,
+          },
+        });
+        this.categories = result.data.categories;
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    },
   },
 });
