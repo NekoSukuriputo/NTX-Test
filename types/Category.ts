@@ -1,4 +1,4 @@
-export type CATEGORY = {
+export type Category = {
     id: number;
     name: string;
 }

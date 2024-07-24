@@ -12,6 +12,9 @@
         <slot name="content"></slot>
       </tbody>
     </table>
+    <div class="mt-2">
+        <slot name="pagination"></slot>
+    </div>
   </div>
 </template>
 

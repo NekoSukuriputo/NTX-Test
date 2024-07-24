@@ -2,12 +2,21 @@
   <div class="mx-20 my-10">
     <div>
       <button
+        @click="onAdd"
         type="button"
         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
       >
         Add Category
       </button>
     </div>
+
+    <!-- Main modal -->
+    <FormCategory
+      v-model="showModal"
+      id="crud-modal"
+      @submit="onSubmit"
+      :loading="isLoading"
+    />
     <Table>
       <template #header>
         <tr>
@@ -23,6 +32,7 @@
       </template>
       <template #content>
         <tr
+          v-if="result.categories"
           v-for="(category, index) in result.categories"
           :key="index"
           class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
@@ -36,41 +46,190 @@
           <td class="px-6 py-4">
             <div class="flex space-x-3">
               <span
-                class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                @click="onEdit(category.id)"
+                class="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
+                @click="onEdit(category)"
                 >Edit</span
               >
               <span
                 @click="onDelete(category.id)"
-                class="font-medium text-red-600 dark:text-red-500 hover:underline"
+                class="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer"
                 >Delete</span
               >
             </div>
           </td>
         </tr>
       </template>
+      <!-- <template>
+        <FwbPagination />
+      </template> -->
     </Table>
   </div>
 </template>
 
 <script lang="ts" setup>
+import Swal from "sweetalert2/dist/sweetalert2.js";
+import "sweetalert2/src/sweetalert2.scss";
+
+import { FwbPagination } from "flowbite-vue";
 import { GET_CATEGORIES } from "~/graphqL/queries/category";
-import type { CategoriesResult } from "~/types/Category";
+import type { CategoriesResult, Category } from "~/types/Category";
+import {
+  CREATE_CATEGORY_ONE,
+  DELETE_CATEGORY_ONE,
+  UPDATE_CATEGORY_ONE,
+} from "~/graphqL/mutations/category";
+import { useCategory } from "~/stores/useCategory";
+
+const categoryStore = useCategory();
+const formCategory = computed(() => {
+  return categoryStore.getFormCategory;
+});
+const flag = ref("");
+const showModal = ref(false);
+const isLoading = ref(false);
 definePageMeta({
   layout: "crud-layout",
 });
 
 const { result } = await useQuery<CategoriesResult>(GET_CATEGORIES, {
   limit: 10,
+  offset: 20,
 });
 
 const headers = ["ID", "Name", "Actions"];
 
-const onEdit = async (id: number) => {
+const onAdd = async () => {
   // TODO
+  flag.value = "add";
+  showModal.value = true;
+  categoryStore.resetFormCategory();
 };
-const onDelete = async (id: number) => {
+
+const onEdit = async (item: Category) => {
   // TODO
+  flag.value = "edit";
+  showModal.value = true;
+  categoryStore.setFormCategory(item);
+};
+const onDelete = async (idCategory: number) => {
+  // TODO
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!",
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      isLoading.value = true;
+      // TODO
+      try {
+        const { mutate } = useMutation(DELETE_CATEGORY_ONE);
+
+        const response = await mutate({
+          id: idCategory,
+        });
+
+        if (response.errors) {
+          isLoading.value = false;
+          Swal.fire({
+            title: "Error",
+            text: "Something went wrong: " + response.errors[0].message,
+            icon: "error",
+          });
+        } else {
+          Swal.fire({
+            title: "Deleted!",
+            text: "Your file has been deleted.",
+            icon: "success",
+          }).then(() => {
+            showModal.value = false;
+            isLoading.value = false;
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          title: "Error",
+          text: "Something went wrong: " + error.message,
+          icon: "error",
+        });
+        isLoading.value = false;
+      }
+    }
+  });
+};
+
+const onSubmit = async () => {
+  isLoading.value = true;
+
+  if (flag.value === "add") {
+    try {
+      const { mutate } = useMutation(CREATE_CATEGORY_ONE);
+
+      const response = await mutate({
+        name: formCategory.value.name,
+      });
+
+      if (response.errors) {
+        isLoading.value = false;
+        Swal.fire({
+          title: "Error",
+          text: "Something went wrong: " + response.errors[0].message,
+          icon: "error",
+        });
+      } else {
+        Swal.fire({
+          title: "Success",
+          text: "Your category has been added successfully",
+          icon: "success",
+        }).then(() => {
+          showModal.value = false;
+          isLoading.value = false;
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: "Something went wrong: " + error.message,
+        icon: "error",
+      });
+      isLoading.value = false;
+    }
+  } else if (flag.value === "edit") {
+    try {
+      const { mutate } = useMutation(UPDATE_CATEGORY_ONE);
+      const response = await mutate({
+        name: formCategory.value.name,
+      });
+
+      if (response.errors) {
+        isLoading.value = false;
+        Swal.fire({
+          title: "Error",
+          text: "Something went wrong: " + response.errors[0].message,
+          icon: "error",
+        });
+      } else {
+        Swal.fire({
+          title: "Success",
+          text: "Your category has been updated successfully",
+          icon: "success",
+        }).then(() => {
+          showModal.value = false;
+          isLoading.value = false;
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: "Something went wrong: " + error.message,
+        icon: "error",
+      });
+      isLoading.value = false;
+    }
+  }
 };
 </script>
 

@@ -82,6 +82,13 @@
   </main>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+// initialize components based on data attribute selectors
+onMounted(() => {
+  useFlowbite(() => {
+    initFlowbite();
+  });
+});
+</script>
 
 <style></style>

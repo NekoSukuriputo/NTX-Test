@@ -3,7 +3,7 @@ import gql from "graphql-tag";
 // create category mutation
 export const CREATE_CATEGORY_ONE = gql`
   mutation createCategory($name: String!) {
-    insert_categories_one(objects: { name: $name }) {
+    insert_categories(objects: { name: $name }) {
       returning {
         id
         name
