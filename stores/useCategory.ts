@@ -12,9 +12,7 @@ const INIT_FORM_CATEGORY = {
 
 export const useCategory = defineStore("useCategory", {
   state: () => ({
-    formCategory: {
-      ...INIT_FORM_CATEGORY,
-    } as Category,
+    formCategory: reactive({ ...INIT_FORM_CATEGORY }),
     categories: [] as Category[],
   }),
   getters: {
@@ -27,7 +25,8 @@ export const useCategory = defineStore("useCategory", {
   },
   actions: {
     setFormCategory(category: Category) {
-      this.formCategory = category;
+      this.formCategory.id = category.id;
+      this.formCategory.name = category.name;
     },
     resetFormCategory() {
       this.formCategory = {

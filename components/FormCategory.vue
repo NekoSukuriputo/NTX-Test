@@ -43,11 +43,12 @@
 import { FwbModal, FwbButton } from "flowbite-vue";
 import { useCategory } from "~/stores/useCategory";
 const categoryStore = useCategory();
+
 const formCategory = computed({
-  get: () => {
+  get() {
     return categoryStore.getFormCategory;
   },
-  set: (value) => {
+  set(value) {
     categoryStore.setFormCategory(value);
   },
 });
