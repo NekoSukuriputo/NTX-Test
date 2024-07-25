@@ -62,7 +62,7 @@
       {{ isLoading ? "Submitting..." : "Submit" }}
     </button>
     <div
-      v-if="taxStore.getTaxResult != '' || +taxStore.getTaxResult >= 0"
+      v-if="taxStore.getTaxResult !== '' && +taxStore.getTaxResult >= 0"
       class="mt-4 p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400"
       role="alert"
     >
