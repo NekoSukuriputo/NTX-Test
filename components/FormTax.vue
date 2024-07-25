@@ -88,7 +88,7 @@ const onSubmit = async () => {
   // Input validation
   // check if income, age, and dependents are numbers
   // check if income, age, and dependents are greater than 0
-  if (typeof formTax.value.income !== "number" || formTax.value.income < 0) {
+  if (+formTax.value.income < 0) {
     errors.value.push("Invalid income");
   }
   if (typeof formTax.value.age !== "number" || formTax.value.age < 0) {
