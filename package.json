@@ -18,6 +18,8 @@
     "@vue/apollo-composable": "^4.0.2",
     "flowbite": "^2.4.1",
     "flowbite-vue": "^0.1.5",
+    "leaflet": "^1.9.4",
+    "leaflet.markercluster": "^1.5.3",
     "nuxt": "^3.12.4",
     "pinia": "^2.1.7",
     "sweetalert2": "^11.12.3",
