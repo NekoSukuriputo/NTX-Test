@@ -62,7 +62,7 @@
       {{ isLoading ? "Submitting..." : "Submit" }}
     </button>
     <div
-      v-if="taxStore.getTaxResult != ''"
+      v-if="taxStore.getTaxResult != '' || +taxStore.getTaxResult >= 0"
       class="mt-4 p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400"
       role="alert"
     >
@@ -112,9 +112,9 @@ const onSubmit = async () => {
   }
   // get result from calculateTax in store
   const result = await taxStore.calculateTax(
-    formTax.value.income,
-    formTax.value.age,
-    formTax.value.dependents
+    +formTax.value.income,
+    +formTax.value.age,
+    +formTax.value.dependents
   );
   isLoading.value = false;
   // set result in store
