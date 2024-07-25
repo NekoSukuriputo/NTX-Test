@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "9ff232a7-f8c1-47bc-b8e6-11974d8e2cbd",
+		"_postman_id": "0dc5379c-7ae8-4ab6-81b8-6308efbddc77",
 		"name": "NEXT TEST",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "6851362"
@@ -50,6 +50,89 @@
 				},
 				{
 					"name": "Query product by id",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": " application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-hasura-admin-secret",
+								"value": " jw8y3lwW7Vk4HKuROjlbs3flnrYaDsE1vkqNqhtTgv3rIo8bC655Fx6WmSZk4KvO",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "{\r\n   products_by_pk(id:9) {\r\n    id\r\n    name\r\n    price\r\n    quantity\r\n    company_id\r\n    category_id\r\n    company{\r\n        id\r\n        name\r\n    }\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "https://sirefcode.hasura.app/v1/graphql",
+							"protocol": "https",
+							"host": [
+								"sirefcode",
+								"hasura",
+								"app"
+							],
+							"path": [
+								"v1",
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Location",
+			"item": [
+				{
+					"name": "Query Location",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": " application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-hasura-admin-secret",
+								"value": " jw8y3lwW7Vk4HKuROjlbs3flnrYaDsE1vkqNqhtTgv3rIo8bC655Fx6WmSZk4KvO",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "{\r\n   products {\r\n    id\r\n    name\r\n    price\r\n    quantity\r\n    company_id\r\n    category_id\r\n    company{\r\n        id\r\n        name\r\n    }\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "https://sirefcode.hasura.app/v1/graphql",
+							"protocol": "https",
+							"host": [
+								"sirefcode",
+								"hasura",
+								"app"
+							],
+							"path": [
+								"v1",
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Query Lacation by pk",
 					"request": {
 						"method": "POST",
 						"header": [
