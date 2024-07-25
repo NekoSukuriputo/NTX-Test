@@ -5,7 +5,12 @@ export default defineNuxtConfig({
   devServer: {
     port: 4000,
   },
-  modules: ["@pinia/nuxt", "@nuxtjs/apollo", "@nuxtjs/tailwindcss"],
+  modules: [
+    "@pinia/nuxt",
+    "@nuxtjs/apollo",
+    "@nuxtjs/tailwindcss",
+    "@nuxtjs/leaflet",
+  ],
   apollo: {
     autoImports: true,
     clients: {

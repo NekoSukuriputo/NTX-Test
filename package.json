@@ -13,6 +13,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxtjs/leaflet": "^1.0.14",
     "@pinia/nuxt": "^0.5.1",
     "@vue/apollo-composable": "^4.0.2",
     "flowbite": "^2.4.1",
